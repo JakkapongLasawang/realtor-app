@@ -36,7 +36,7 @@ export class AuthController {
       if (!isMatch) throw new UnauthorizedException();
     }
 
-    return this.authService.signup(body,userType);
+    return this.authService.signup(body, userType);
   }
 
   @Post('signin')

@@ -60,8 +60,6 @@ export class AuthService {
   }
 
   async generateProductKey({ email, userType }: ProductKeyDto) {
-    console.log(email, userType);
-
     const string = `${email}-${userType}-${process.env.PRODUCT_KEY}`;
     const hash = await bcrypt.hash(string, 10);
     return { product_key: hash };

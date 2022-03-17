@@ -6,11 +6,11 @@ import {
   Post,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiProperty, ApiTags } from '@nestjs/swagger';
 import { UserType } from '@prisma/client';
 import { AuthService } from './auth.service';
 import { ProductKeyDto } from './dtos/productKey.dto';
-import { SignupDto } from './dtos/signup.dto';
+import { SignupDto, UserTypeDto } from './dtos/signup.dto';
 import { SigninDto } from './dtos/signin.dto';
 
 @ApiTags('auth')
@@ -21,7 +21,7 @@ export class AuthController {
   @Post('signup/:userType')
   async signup(
     @Body() body: SignupDto,
-    @Param('userType', new ParseEnumPipe(UserType)) userType: UserType,
+    @Param('userType') { userType }: UserTypeDto,
   ) {
     const { email, productKey } = body;
     if (userType !== UserType.BUYER) {

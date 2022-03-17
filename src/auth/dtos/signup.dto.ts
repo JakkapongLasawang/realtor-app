@@ -1,6 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { UserType } from '@prisma/client';
 import {
   IsEmail,
+  IsEnum,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -36,4 +38,11 @@ export class SignupDto {
   @IsOptional()
   @IsString()
   productKey?: string;
+}
+
+export class UserTypeDto {
+  @ApiProperty({ enum: UserType })
+  @IsNotEmpty()
+  @IsEnum(UserType)
+  userType: UserType;
 }

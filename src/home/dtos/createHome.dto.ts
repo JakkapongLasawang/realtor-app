@@ -1,0 +1,59 @@
+import { ApiProperty } from '@nestjs/swagger';
+import { PropertyType } from '@prisma/client';
+import { Type } from 'class-transformer';
+import {
+  IsArray,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
+
+export class createHomeDto {
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  address: string;
+
+  @ApiProperty()
+  @IsNumber()
+  @IsNotEmpty()
+  numberOfBedrooms: number;
+
+  @ApiProperty()
+  @IsNumber()
+  @IsNotEmpty()
+  numberOfBathrooms: number;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  city: string;
+
+  @ApiProperty()
+  @IsNumber()
+  @IsNotEmpty()
+  price: number;
+
+  @ApiProperty()
+  @IsNumber()
+  @IsNotEmpty()
+  landSize: number;
+
+  @ApiProperty({ enum: PropertyType })
+  @IsEnum(PropertyType)
+  propertyType: PropertyType;
+
+  @ApiProperty({ type: () => Image })
+  @IsArray()
+  @ValidateNested({ each: true })
+  images: Image[];
+}
+
+export class Image {
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  url: string;
+}

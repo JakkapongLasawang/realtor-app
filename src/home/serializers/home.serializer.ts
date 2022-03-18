@@ -7,6 +7,21 @@ export class HomeSerializer {
   price: number;
 
   @Exclude()
+  realtor_id?: number;
+
+  @Exclude()
+  created_at?: Date;
+  @Exclude()
+  updated_at?: Date;
+
+  @Exclude()
+  land_size?: number;
+  @Expose({ name: 'landSize' })
+  landSize() {
+    return this.land_size;
+  }
+
+  @Exclude()
   property_type: PropertyType;
   @Expose({ name: 'propertyType' })
   propertyType() {
@@ -26,13 +41,9 @@ export class HomeSerializer {
   }
   image?: string;
 
-
-  images?: string[];
- 
+  images?: { url: string }[];
 
   constructor(partial: Partial<HomeSerializer>) {
     Object.assign(this, partial);
   }
 }
-
-

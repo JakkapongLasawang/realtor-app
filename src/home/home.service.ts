@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { GetHomesDto } from './dtos/getHomes.dto';
+import { createHomeDto } from './dtos/createHome.dto';
+import { GetHomesDto } from './dtos/getHome.dto';
 import { HomeSerializer } from './serializers/home.serializer';
 
 @Injectable()
@@ -59,15 +60,45 @@ export class HomeService {
 
     if (!home) throw new NotFoundException();
 
-    const images = home.Image.map((image) => image.url);
+    const images = home.Image;
     delete home.Image;
     const fetchHome = { ...home, images };
 
     return new HomeSerializer(fetchHome);
   }
 
-  async createHome() {
-    return [];
+  async createHome(payload: createHomeDto) {
+    const {
+      address,
+      city,
+      images,
+      landSize,
+      numberOfBathrooms,
+      numberOfBedrooms,
+      price,
+      propertyType,
+    } = payload;
+
+    const home = await this.prismaService.home.create({
+      data: {
+        address,
+        city,
+        land_size: landSize,
+        number_of_bathrooms: numberOfBathrooms,
+        number_of_bedrooms: numberOfBedrooms,
+        price,
+        property_type: propertyType,
+        realtor_id: 1,
+      },
+    });
+
+    const homeImages = images.map((image) => {
+      return { ...image, home_id: home.id };
+    });
+
+    await this.prismaService.image.createMany({ data: homeImages });
+
+    return new HomeSerializer(home);
   }
 
   async updateHome() {

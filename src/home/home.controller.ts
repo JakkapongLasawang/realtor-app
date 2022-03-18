@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
@@ -11,7 +12,8 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { HomeSerializer } from './serializers/home.serializer';
 import { HomeService } from './home.service';
-import { GetHomesDto } from './dtos/getHomes.dto';
+import { GetHomesDto } from './dtos/getHome.dto';
+import { createHomeDto } from './dtos/createHome.dto';
 
 @ApiTags('home')
 @Controller('home')
@@ -30,8 +32,8 @@ export class HomeController {
   }
 
   @Post()
-  async createHome() {
-    return this.homeService.createHome();
+  async createHome(@Body() body: createHomeDto) {
+    return this.homeService.createHome(body);
   }
   @Put(':id')
   async updateHome() {

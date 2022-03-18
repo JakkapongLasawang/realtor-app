@@ -54,7 +54,7 @@ export class HomeService {
         Image: {
           select: {
             url: true,
-            id:true
+            id: true,
           },
         },
       },
@@ -126,7 +126,7 @@ export class HomeService {
     return {
       ...(city && { city }),
       ...(price && { price }),
-      ...(propertyType && { propertyType }),
+      ...(propertyType && { property_type: propertyType }),
     };
   }
 }

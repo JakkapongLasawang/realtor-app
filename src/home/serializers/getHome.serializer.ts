@@ -1,4 +1,4 @@
-import { HomeBaseSerializer } from './hoemBase.serializer';
+import { HomeBaseSerializer } from './homeBase.serializer';
 export class GetHomeSerializer extends HomeBaseSerializer {
   constructor(partial: Partial<GetHomeSerializer>) {
     super(partial);

@@ -1,4 +1,4 @@
-import { HomeBaseSerializer } from './hoemBase.serializer';
+import { HomeBaseSerializer } from './homeBase.serializer';
 export class GetHomesSerializer extends HomeBaseSerializer {
   image: string;
 

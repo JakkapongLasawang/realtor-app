@@ -1,5 +1,5 @@
 import { Exclude, Expose } from 'class-transformer';
-import { HomeBaseSerializer } from './hoemBase.serializer';
+import { HomeBaseSerializer } from './homeBase.serializer';
 export class CreateHomeSerializer extends HomeBaseSerializer {
   @Exclude()
   created_at: Date;

@@ -9,24 +9,7 @@ import { GetHomesDto } from './dtos/getHomes.dto';
 export class HomeController {
   constructor(private readonly homeService: HomeService) {}
   @Get()
-  async getHomes(
-    @Query() { city, maxPrice, minPrice, propertyType }: GetHomesDto,
-  ): Promise<HomeResponseDto[]> {
-    // dynamic json
-    const price =
-      minPrice || maxPrice
-        ? {
-            ...(minPrice && { gte: Number(minPrice) }),
-            ...(maxPrice && { gte: Number(maxPrice) }),
-          }
-        : undefined;
-
-    const filters = {
-      ...(city && { city }),
-      ...(price && { price }),
-      ...(propertyType && { propertyType }),
-    };
-
+  async getHomes(@Query() filters: GetHomesDto): Promise<HomeResponseDto[]> {
     return this.homeService.getHomes(filters);
   }
 

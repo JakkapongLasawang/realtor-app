@@ -24,12 +24,12 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
       ],
       errorFormat: 'colorless',
     });
-    this.logger.log(`Prisma v${Prisma.prismaVersion.client}`);
-    this.$on<any>('query', (e: Prisma.QueryEvent) => {
-      this.logger.debug('Query: ' + e.query);
-      this.logger.debug('Params: ' + e.params);
-      this.logger.debug('Duration: ' + e.duration + 'ms');
-    });
+    // this.logger.log(`Prisma v${Prisma.prismaVersion.client}`);
+    // this.$on<any>('query', (e: Prisma.QueryEvent) => {
+    //   this.logger.debug('Query: ' + e.query);
+    //   this.logger.debug('Params: ' + e.params);
+    //   this.logger.debug('Duration: ' + e.duration + 'ms');
+    // });
   }
 
   async onModuleInit() {

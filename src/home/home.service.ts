@@ -6,7 +6,9 @@ import { HomeResponseDto } from './responses/homeResponse.dto';
 @Injectable()
 export class HomeService {
   constructor(private readonly prismaService: PrismaService) {}
-  async getHomes(filters: GetHomesDto): Promise<HomeResponseDto[]> {
+  async getHomes(payload: GetHomesDto): Promise<HomeResponseDto[]> {
+    const filters = this.filtersHome(payload);
+
     const homes = await this.prismaService.home.findMany({
       select: {
         id: true,
@@ -48,5 +50,23 @@ export class HomeService {
 
   async deleteHome() {
     return [];
+  }
+
+  // private section
+  private filtersHome({ city, maxPrice, minPrice, propertyType }: GetHomesDto) {
+    // dynamic json
+    const price =
+      minPrice || maxPrice
+        ? {
+            ...(minPrice && { gte: Number(minPrice) }),
+            ...(maxPrice && { gte: Number(maxPrice) }),
+          }
+        : undefined;
+
+    return {
+      ...(city && { city }),
+      ...(price && { price }),
+      ...(propertyType && { propertyType }),
+    };
   }
 }

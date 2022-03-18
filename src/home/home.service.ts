@@ -38,8 +38,32 @@ export class HomeService {
     });
   }
 
-  async getHome() {
-    return [];
+  async getHome(id: number): Promise<HomeSerializer> {
+    const home = await this.prismaService.home.findUnique({
+      select: {
+        id: true,
+        address: true,
+        city: true,
+        price: true,
+        property_type: true,
+        number_of_bathrooms: true,
+        number_of_bedrooms: true,
+        Image: {
+          select: {
+            url: true,
+          },
+        },
+      },
+      where: { id },
+    });
+
+    if (!home) throw new NotFoundException();
+
+    const images = home.Image.map((image) => image.url);
+    delete home.Image;
+    const fetchHome = { ...home, images };
+
+    return new HomeSerializer(fetchHome);
   }
 
   async createHome() {

@@ -26,7 +26,13 @@ export class HomeSerializer {
   }
   image?: string;
 
+
+  images?: string[];
+ 
+
   constructor(partial: Partial<HomeSerializer>) {
     Object.assign(this, partial);
   }
 }
+
+

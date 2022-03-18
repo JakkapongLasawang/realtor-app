@@ -1,4 +1,13 @@
-import { Controller, Delete, Get, Post, Put, Query } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { HomeSerializer } from './serializers/home.serializer';
 import { HomeService } from './home.service';
@@ -14,8 +23,10 @@ export class HomeController {
   }
 
   @Get(':id')
-  async getHome() {
-    return this.homeService.getHome();
+  async getHome(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<HomeSerializer> {
+    return this.homeService.getHome(id);
   }
 
   @Post()

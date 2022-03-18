@@ -1,18 +1,10 @@
 import { PropertyType } from '@prisma/client';
 import { Exclude, Expose } from 'class-transformer';
-export class HomeSerializer {
+export class HomeBaseSerializer {
   id: number;
   address: string;
   city: string;
   price: number;
-
-  @Exclude()
-  realtor_id?: number;
-
-  @Exclude()
-  created_at?: Date;
-  @Exclude()
-  updated_at?: Date;
 
   @Exclude()
   land_size?: number;
@@ -39,11 +31,8 @@ export class HomeSerializer {
   numberOfBedroom() {
     return this.number_of_bedrooms;
   }
-  image?: string;
 
-  images?: { url: string }[];
-
-  constructor(partial: Partial<HomeSerializer>) {
+  constructor(partial: Partial<HomeBaseSerializer>) {
     Object.assign(this, partial);
   }
 }

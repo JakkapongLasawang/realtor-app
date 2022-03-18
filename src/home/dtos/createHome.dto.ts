@@ -45,15 +45,7 @@ export class createHomeDto {
   @IsEnum(PropertyType)
   propertyType: PropertyType;
 
-  @ApiProperty({ type: () => Image })
-  @IsArray()
-  @ValidateNested({ each: true })
-  images: Image[];
-}
-
-export class Image {
   @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
-  url: string;
+  @IsArray()
+  images: string[];
 }

@@ -10,24 +10,25 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { HomeSerializer } from './serializers/home.serializer';
+import { GetHomesSerializer } from './serializers/getHomes.serializer';
 import { HomeService } from './home.service';
 import { GetHomesDto } from './dtos/getHome.dto';
 import { createHomeDto } from './dtos/createHome.dto';
+import { GetHomeSerializer } from './serializers/getHome.serializer';
 
 @ApiTags('home')
 @Controller('home')
 export class HomeController {
   constructor(private readonly homeService: HomeService) {}
   @Get()
-  async getHomes(@Query() filters: GetHomesDto): Promise<HomeSerializer[]> {
+  async getHomes(@Query() filters: GetHomesDto): Promise<GetHomesSerializer[]> {
     return this.homeService.getHomes(filters);
   }
 
   @Get(':id')
   async getHome(
     @Param('id', ParseIntPipe) id: number,
-  ): Promise<HomeSerializer> {
+  ): Promise<GetHomeSerializer> {
     return this.homeService.getHome(id);
   }
 

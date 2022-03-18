@@ -2,12 +2,14 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { createHomeDto } from './dtos/createHome.dto';
 import { GetHomesDto } from './dtos/getHome.dto';
-import { HomeSerializer } from './serializers/home.serializer';
+import { CreateHomeSerializer } from './serializers/createHome.serializer';
+import { GetHomeSerializer } from './serializers/getHome.serializer';
+import { GetHomesSerializer } from './serializers/getHomes.serializer';
 
 @Injectable()
 export class HomeService {
   constructor(private readonly prismaService: PrismaService) {}
-  async getHomes(payload: GetHomesDto): Promise<HomeSerializer[]> {
+  async getHomes(payload: GetHomesDto): Promise<GetHomesSerializer[]> {
     const filters = this.filtersHome(payload);
 
     const homes = await this.prismaService.home.findMany({
@@ -35,11 +37,11 @@ export class HomeService {
       const image = home.Image[0].url;
       const fetchHome = { ...home, image };
       delete fetchHome.Image;
-      return new HomeSerializer(fetchHome);
+      return new GetHomesSerializer(fetchHome);
     });
   }
 
-  async getHome(id: number): Promise<HomeSerializer> {
+  async getHome(id: number): Promise<GetHomeSerializer> {
     const home = await this.prismaService.home.findUnique({
       select: {
         id: true,
@@ -52,6 +54,7 @@ export class HomeService {
         Image: {
           select: {
             url: true,
+            id:true
           },
         },
       },
@@ -64,7 +67,7 @@ export class HomeService {
     delete home.Image;
     const fetchHome = { ...home, images };
 
-    return new HomeSerializer(fetchHome);
+    return new GetHomeSerializer(fetchHome);
   }
 
   async createHome(payload: createHomeDto) {
@@ -91,14 +94,14 @@ export class HomeService {
         realtor_id: 1,
       },
     });
-
-    const homeImages = images.map((image) => {
-      return { ...image, home_id: home.id };
+    console.log(images);
+    const homeImages = images.map((url) => {
+      return { url, home_id: home.id };
     });
 
     await this.prismaService.image.createMany({ data: homeImages });
 
-    return new HomeSerializer(home);
+    return new CreateHomeSerializer(home);
   }
 
   async updateHome() {

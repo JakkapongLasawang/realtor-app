@@ -1,15 +1,33 @@
-import { Controller, Delete, Get, Post, Put } from '@nestjs/common';
+import { Controller, Delete, Get, Post, Put, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { HomeResponseDto } from './dtos/homeResponse.dto';
+import { HomeResponseDto } from './responses/homeResponse.dto';
 import { HomeService } from './home.service';
+import { GetHomesDto } from './dtos/getHomes.dto';
 
 @ApiTags('home')
 @Controller('home')
 export class HomeController {
   constructor(private readonly homeService: HomeService) {}
   @Get()
-  async getHomes(): Promise<HomeResponseDto[]> {
-    return this.homeService.getHomes();
+  async getHomes(
+    @Query() { city, maxPrice, minPrice, propertyType }: GetHomesDto,
+  ): Promise<HomeResponseDto[]> {
+    // dynamic json
+    const price =
+      minPrice || maxPrice
+        ? {
+            ...(minPrice && { gte: Number(minPrice) }),
+            ...(maxPrice && { gte: Number(maxPrice) }),
+          }
+        : undefined;
+
+    const filters = {
+      ...(city && { city }),
+      ...(price && { price }),
+      ...(propertyType && { propertyType }),
+    };
+
+    return this.homeService.getHomes(filters);
   }
 
   @Get(':id')

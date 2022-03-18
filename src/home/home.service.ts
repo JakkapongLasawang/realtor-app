@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { HomeResponseDto } from './dtos/homeResponse.dto';
+import { GetHomesDto } from './dtos/getHomes.dto';
+import { HomeResponseDto } from './responses/homeResponse.dto';
 
 @Injectable()
 export class HomeService {
   constructor(private readonly prismaService: PrismaService) {}
-  async getHomes(): Promise<HomeResponseDto[]> {
+  async getHomes(filters: GetHomesDto): Promise<HomeResponseDto[]> {
     const homes = await this.prismaService.home.findMany({
       select: {
         id: true,
@@ -22,6 +23,7 @@ export class HomeService {
           take: 1,
         },
       },
+      where: filters,
     });
 
     return homes.map((home) => {

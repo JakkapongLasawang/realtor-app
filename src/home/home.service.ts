@@ -1,12 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { GetHomesDto } from './dtos/getHomes.dto';
-import { HomeResponse } from './responses/homeResponse.dto';
+import { HomeSerializer } from './serializers/home.serializer';
 
 @Injectable()
 export class HomeService {
   constructor(private readonly prismaService: PrismaService) {}
-  async getHomes(payload: GetHomesDto): Promise<HomeResponse[]> {
+  async getHomes(payload: GetHomesDto): Promise<HomeSerializer[]> {
     const filters = this.filtersHome(payload);
 
     const homes = await this.prismaService.home.findMany({
@@ -34,7 +34,7 @@ export class HomeService {
       const image = home.Image[0].url;
       const fetchHome = { ...home, image };
       delete fetchHome.Image;
-      return new HomeResponse(fetchHome);
+      return new HomeSerializer(fetchHome);
     });
   }
 

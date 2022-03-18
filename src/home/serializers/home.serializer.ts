@@ -1,6 +1,6 @@
 import { PropertyType } from '@prisma/client';
 import { Exclude, Expose } from 'class-transformer';
-export class HomeResponse {
+export class HomeSerializer {
   id: number;
   address: string;
   city: string;
@@ -26,7 +26,7 @@ export class HomeResponse {
   }
   image?: string;
 
-  constructor(partial: Partial<HomeResponse>) {
+  constructor(partial: Partial<HomeSerializer>) {
     Object.assign(this, partial);
   }
 }

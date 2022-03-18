@@ -1,6 +1,6 @@
 import { Controller, Delete, Get, Post, Put, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { HomeResponseDto } from './responses/homeResponse.dto';
+import { HomeResponse } from './responses/homeResponse.dto';
 import { HomeService } from './home.service';
 import { GetHomesDto } from './dtos/getHomes.dto';
 
@@ -9,7 +9,7 @@ import { GetHomesDto } from './dtos/getHomes.dto';
 export class HomeController {
   constructor(private readonly homeService: HomeService) {}
   @Get()
-  async getHomes(@Query() filters: GetHomesDto): Promise<HomeResponseDto[]> {
+  async getHomes(@Query() filters: GetHomesDto): Promise<HomeResponse[]> {
     return this.homeService.getHomes(filters);
   }
 

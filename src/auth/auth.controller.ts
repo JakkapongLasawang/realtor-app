@@ -19,10 +19,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('signup/:userType')
-  async signup(
-    @Body() body: SignupDto,
-    @Param('userType') { userType }: UserTypeDto,
-  ) {
+  async signup(@Body() body: SignupDto, @Param() { userType }: UserTypeDto) {
     const { email, productKey } = body;
     if (userType !== UserType.BUYER) {
       if (!body.productKey) throw new UnauthorizedException();

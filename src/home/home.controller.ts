@@ -21,6 +21,8 @@ import {
 } from './serializer';
 import { UpdateHomeDto } from './dto/updateHome.dto';
 import { User, UserRequestType } from 'src/auth/decorators/user.decorator';
+import { Roles } from 'src/decorators/roles.dectorator';
+import { UserType } from '@prisma/client';
 
 @ApiTags('home')
 @ApiBearerAuth('Authorization')
@@ -39,6 +41,7 @@ export class HomeController {
     return this.homeService.getHome(id);
   }
 
+  @Roles(UserType.REALTOR, UserType.ADMIN)
   @Post()
   async createHome(
     @Body() body: createHomeDto,
@@ -46,6 +49,8 @@ export class HomeController {
   ): Promise<CreateHomeSerializer> {
     return this.homeService.createHome(body, user.id);
   }
+
+  @Roles(UserType.REALTOR, UserType.ADMIN)
   @Put(':id')
   async updateHome(
     @Param('id', ParseIntPipe) id: number,
@@ -57,6 +62,8 @@ export class HomeController {
 
     return this.homeService.updateHome(id, body);
   }
+
+  @Roles(UserType.REALTOR, UserType.ADMIN)
   @Delete(':id')
   async deleteHome(
     @Param('id', ParseIntPipe) id: number,

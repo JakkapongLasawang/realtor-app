@@ -73,7 +73,10 @@ export class HomeService {
     return new GetHomeSerializer(fetchHome);
   }
 
-  async createHome(payload: createHomeDto): Promise<CreateHomeSerializer> {
+  async createHome(
+    payload: createHomeDto,
+    userId: number,
+  ): Promise<CreateHomeSerializer> {
     const {
       address,
       city,
@@ -94,7 +97,7 @@ export class HomeService {
         number_of_bedrooms: numberOfBedrooms,
         price,
         property_type: propertyType,
-        realtor_id: 1,
+        realtor_id: userId,
       },
     });
     console.log(images);
@@ -174,5 +177,15 @@ export class HomeService {
         number_of_bedrooms: numberOfBedrooms,
       }),
     };
+  }
+  async getRealtorByHomeId(id: number) {
+    const home = await this.prismaService.home.findUnique({
+      select: { realtor_id: true },
+      where: { id },
+    });
+
+    if (!home) throw new NotFoundException();
+
+    return home.realtor_id;
   }
 }

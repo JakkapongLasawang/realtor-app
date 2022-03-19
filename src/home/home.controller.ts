@@ -8,8 +8,9 @@ import {
   Post,
   Put,
   Query,
+  UnauthorizedException,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { HomeService } from './home.service';
 import { createHomeDto, GetHomesDto } from './dto';
 import {
@@ -19,8 +20,10 @@ import {
   UpdateHomeSerializer,
 } from './serializer';
 import { UpdateHomeDto } from './dto/updateHome.dto';
+import { User, UserRequestType } from 'src/auth/docorators/user.decorator';
 
 @ApiTags('home')
+@ApiBearerAuth('Authorization')
 @Controller('home')
 export class HomeController {
   constructor(private readonly homeService: HomeService) {}
@@ -37,18 +40,31 @@ export class HomeController {
   }
 
   @Post()
-  async createHome(@Body() body: createHomeDto): Promise<CreateHomeSerializer> {
-    return this.homeService.createHome(body);
+  async createHome(
+    @Body() body: createHomeDto,
+    @User() user: UserRequestType,
+  ): Promise<CreateHomeSerializer> {
+    return this.homeService.createHome(body, user.id);
   }
   @Put(':id')
   async updateHome(
     @Param('id', ParseIntPipe) id: number,
     @Body() body: UpdateHomeDto,
+    @User() user: UserRequestType,
   ): Promise<UpdateHomeSerializer> {
+    const realtorId = await this.homeService.getRealtorByHomeId(id);
+    if (realtorId !== user.id) throw new UnauthorizedException();
+
     return this.homeService.updateHome(id, body);
   }
   @Delete(':id')
-  async deleteHome(@Param('id', ParseIntPipe) id: number) {
+  async deleteHome(
+    @Param('id', ParseIntPipe) id: number,
+    @User() user: UserRequestType,
+  ) {
+    const realtorId = await this.homeService.getRealtorByHomeId(id);
+    if (realtorId !== user.id) throw new UnauthorizedException();
+
     return this.homeService.deleteHome(id);
   }
 }

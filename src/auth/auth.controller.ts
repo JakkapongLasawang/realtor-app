@@ -1,17 +1,19 @@
 import {
   Body,
   Controller,
+  Get,
   Param,
   ParseEnumPipe,
   Post,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ApiProperty, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiProperty, ApiTags } from '@nestjs/swagger';
 import { UserType } from '@prisma/client';
 import { AuthService } from './auth.service';
 import { ProductKeyDto } from './dtos/productKey.dto';
 import { SignupDto, UserTypeDto } from './dtos/signup.dto';
 import { SigninDto } from './dtos/signin.dto';
+import { User, UserRequestType } from './docorators/user.decorator';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -44,5 +46,11 @@ export class AuthController {
   @Post('key')
   async generateProductKey(@Body() Body: ProductKeyDto) {
     return this.authService.generateProductKey(Body);
+  }
+
+  @ApiBearerAuth('Authorization')
+  @Get('profile')
+  async userProfile(@User() user: UserRequestType) {
+    return user;
   }
 }

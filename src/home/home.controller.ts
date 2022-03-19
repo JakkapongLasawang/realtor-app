@@ -20,7 +20,7 @@ import {
   UpdateHomeSerializer,
 } from './serializer';
 import { UpdateHomeDto } from './dto/updateHome.dto';
-import { User, UserRequestType } from 'src/auth/docorators/user.decorator';
+import { User, UserRequestType } from 'src/auth/decorators/user.decorator';
 
 @ApiTags('home')
 @ApiBearerAuth('Authorization')

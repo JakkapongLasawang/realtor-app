@@ -13,7 +13,7 @@ import { AuthService } from './auth.service';
 import { ProductKeyDto } from './dtos/productKey.dto';
 import { SignupDto, UserTypeDto } from './dtos/signup.dto';
 import { SigninDto } from './dtos/signin.dto';
-import { User, UserRequestType } from './docorators/user.decorator';
+import { User, UserRequestType } from './decorators/user.decorator';
 
 @ApiTags('auth')
 @Controller('auth')

@@ -1,13 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { PropertyType } from '@prisma/client';
-import { Type } from 'class-transformer';
 import {
   IsArray,
   IsEnum,
   IsNotEmpty,
   IsNumber,
   IsString,
-  ValidateNested,
 } from 'class-validator';
 
 export class createHomeDto {

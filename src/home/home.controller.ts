@@ -10,11 +10,15 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { GetHomesSerializer } from './serializers/getHomes.serializer';
 import { HomeService } from './home.service';
-import { GetHomesDto } from './dtos/getHome.dto';
-import { createHomeDto } from './dtos/createHome.dto';
-import { GetHomeSerializer } from './serializers/getHome.serializer';
+import { createHomeDto, GetHomesDto } from './dto';
+import {
+  CreateHomeSerializer,
+  GetHomeSerializer,
+  GetHomesSerializer,
+  UpdateHomeSerializer,
+} from './serializer';
+import { UpdateHomeDto } from './dto/updateHome.dto';
 
 @ApiTags('home')
 @Controller('home')
@@ -33,15 +37,18 @@ export class HomeController {
   }
 
   @Post()
-  async createHome(@Body() body: createHomeDto) {
+  async createHome(@Body() body: createHomeDto): Promise<CreateHomeSerializer> {
     return this.homeService.createHome(body);
   }
   @Put(':id')
-  async updateHome() {
-    return this.homeService.updateHome();
+  async updateHome(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: UpdateHomeDto,
+  ): Promise<UpdateHomeSerializer> {
+    return this.homeService.updateHome(id, body);
   }
   @Delete(':id')
-  async deleteHome() {
-    return this.homeService.deleteHome();
+  async deleteHome(@Param('id', ParseIntPipe) id: number) {
+    return this.homeService.deleteHome(id);
   }
 }

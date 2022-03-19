@@ -1,10 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { createHomeDto } from './dtos/createHome.dto';
-import { GetHomesDto } from './dtos/getHome.dto';
-import { CreateHomeSerializer } from './serializers/createHome.serializer';
-import { GetHomeSerializer } from './serializers/getHome.serializer';
-import { GetHomesSerializer } from './serializers/getHomes.serializer';
+import { GetHomesDto, createHomeDto } from './dto';
+import { UpdateHomeDto } from './dto/updateHome.dto';
+import {
+  CreateHomeSerializer,
+  GetHomeSerializer,
+  GetHomesSerializer,
+  UpdateHomeSerializer,
+} from './serializer';
 
 @Injectable()
 export class HomeService {
@@ -70,7 +73,7 @@ export class HomeService {
     return new GetHomeSerializer(fetchHome);
   }
 
-  async createHome(payload: createHomeDto) {
+  async createHome(payload: createHomeDto): Promise<CreateHomeSerializer> {
     const {
       address,
       city,
@@ -104,12 +107,30 @@ export class HomeService {
     return new CreateHomeSerializer(home);
   }
 
-  async updateHome() {
-    return [];
+  async updateHome(
+    id: number,
+    payload: UpdateHomeDto,
+  ): Promise<UpdateHomeSerializer> {
+    const home = await this.prismaService.home.findUnique({ where: { id } });
+    if (!home) throw new NotFoundException();
+
+    const updateData = this.dataUpdateHome(payload);
+
+    const homeUpdated = await this.prismaService.home.update({
+      where: { id },
+      data: updateData,
+    });
+
+    return new UpdateHomeSerializer(homeUpdated);
   }
 
-  async deleteHome() {
-    return [];
+  async deleteHome(id: number) {
+    await this.prismaService.image.deleteMany({
+      where: { home_id: id },
+    });
+    await this.prismaService.home.delete({ where: { id } });
+
+    return { success: true };
   }
 
   // private section
@@ -118,15 +139,40 @@ export class HomeService {
     const price =
       minPrice || maxPrice
         ? {
-            ...(minPrice && { gte: Number(minPrice) }),
-            ...(maxPrice && { gte: Number(maxPrice) }),
+            ...(minPrice !== undefined && { gte: Number(minPrice) }),
+            ...(maxPrice !== undefined && { gte: Number(maxPrice) }),
           }
         : undefined;
 
     return {
       ...(city && { city }),
-      ...(price && { price }),
+      ...(price !== undefined && { price }),
       ...(propertyType && { property_type: propertyType }),
+    };
+  }
+
+  private dataUpdateHome(data: UpdateHomeDto) {
+    const {
+      address,
+      city,
+      landSize,
+      numberOfBathrooms,
+      numberOfBedrooms,
+      price,
+      propertyType,
+    } = data;
+    return {
+      ...(address && { address }),
+      ...(city && { city }),
+      ...(price !== undefined && { price }),
+      ...(propertyType && { property_type: propertyType }),
+      ...(landSize && { land_size: landSize }),
+      ...(numberOfBathrooms !== undefined && {
+        number_of_bathrooms: numberOfBathrooms,
+      }),
+      ...(numberOfBedrooms !== undefined && {
+        number_of_bedrooms: numberOfBedrooms,
+      }),
     };
   }
 }

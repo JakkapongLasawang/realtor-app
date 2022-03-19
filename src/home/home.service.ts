@@ -54,6 +54,8 @@ export class HomeService {
         property_type: true,
         number_of_bathrooms: true,
         number_of_bedrooms: true,
+        created_at: true,
+        updated_at: true,
         Image: {
           select: {
             url: true,

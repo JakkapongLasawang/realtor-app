@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { HomeService } from './home.service';
-import { createHomeDto, GetHomesDto } from './dto';
+import { createHomeDto, GetHomesDto, inquireDto } from './dto';
 import {
   CreateHomeSerializer,
   GetHomeSerializer,
@@ -73,5 +73,27 @@ export class HomeController {
     if (realtorId !== user.id) throw new UnauthorizedException();
 
     return this.homeService.deleteHome(id);
+  }
+
+  @Roles(UserType.BUYER)
+  @Post(':id/inquire')
+  async inquire(
+    @Param('id', ParseIntPipe) homeId: number,
+    @User() user: UserRequestType,
+    @Body() { message }: inquireDto,
+  ) {
+    return this.homeService.inquire(user, homeId, message);
+  }
+
+  @Roles(UserType.REALTOR)
+  @Get(':id/message')
+  async getHomeMessages(
+    @Param('id', ParseIntPipe) homeId: number,
+    @User() user: UserRequestType,
+  ) {
+    const realtorId = await this.homeService.getRealtorByHomeId(homeId);
+    if (realtorId !== user.id) throw new UnauthorizedException();
+
+    return this.homeService.getMessagesByHome(homeId);
   }
 }
